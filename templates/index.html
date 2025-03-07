@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
+  
+  <title>
+    Panel de control
+  </title>
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+  <!-- Nucleo Icons -->
+  <link href="{{ url_for('static', filename="assets/css/nucleo-icons.css") }}" rel="stylesheet" />
+  <link href="{{ url_for('static', filename="assets/css/nucleo-svg.css") }}" rel="stylesheet" />
+  <link href="{{ url_for('static', filename="assets/css/all.css") }}" rel="stylesheet" />
+   
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{{ url_for('static', filename="assets/font-awesome-4.7.0/css/font-awesome.min.css") }}">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <!--datatables-->
+  <link href="{{ url_for('static', filename="assets/css/jquery.dataTables.min.css") }}" rel="stylesheet">    
+  <!-- CSS Files -->
+  <link id="pagestyle" href="{{ url_for('static', filename="assets/css/material-dashboard.css") }}?v=3.0.0" rel="stylesheet" /> 
+
+
+
+<style>
+    .async-hide {
+      opacity: 0 !important
+    }
+
+    table.dataTable {
+
+border:1px solid #000;
+
+background-color: #000;
+
+}
+
+th,tr,td
+
+{
+
+  border-color: #000 !important;
+
+}
+
+thead {
+
+  background-color: var(--theadColor);
+
+  
+
+}
+
+thead > tr,
+
+thead > tr > th {
+
+  background-color: transparent;
+
+  color: var(--theadTextColor) !important;
+
+  font-weight: normal;
+
+  text-align: start;
+
+}
+
+table.dataTable thead th,
+
+table.dataTable thead td {
+
+  border-bottom: 0px solid #111 !important;
+
+}
+
+.dataTables_wrapper > div {
+
+  margin: 5px;
+
+}
+
+table.dataTable.display tbody tr.even > .sorting_1,
+
+table.dataTable.order-column.stripe tbody tr.even> .sorting_1, 
+
+table.dataTable.display   tbody tr.even,
+
+table.dataTable.display tbody tr.odd > .sorting_1,
+
+table.dataTable.order-column.stripe tbody tr.odd > .sorting_1,
+
+table.dataTable.display tbody tr.odd {
+
+  background-color: var(--darkRowColor);
+
+  color:var(--lightColor);
+
+}
+.dataTables_info{ 
+  color: rgb(245, 159, 0) !important;
+}
+
+table.dataTable thead th {
+
+  position: relative;
+
+  background-image: none !important;
+
+}
+
+table.dataTable thead th.sorting:after,
+
+table.dataTable thead th.sorting_asc:after,
+
+table.dataTable thead th.sorting_desc:after {
+
+  position: absolute;
+
+  top: 12px;
+
+  right: 8px;
+
+  display: block;
+
+  font-family: "Font Awesome\ 5 Free";
+
+}
+
+table.dataTable thead th.sorting:after {
+
+  content: "\f0dc";
+
+  color: #ddd;
+
+  font-size: 0.8em;
+
+  padding-top: 0.12em;
+
+}
+
+table.dataTable thead th.sorting_asc:after {
+
+  content: "\f0de";
+
+}
+
+table.dataTable thead th.sorting_desc:after {
+
+  content: "\f0dd";
+
+}
+
+table.dataTable.display tbody tr:hover > .sorting_1,
+
+table.dataTable.order-column.hover tbody tr:hover > .sorting_1,
+
+tbody tr:hover {
+
+  background-color: var(--darkColor) !important;
+
+  color: #fff;
+
+}
+table.dataTable tbody tr {
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(194, 194, 194);
+}
+table.dataTable tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(255, 255, 255);
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+  
+    background-color: #ffa600 !important; 
+    border-radius: 50px;
+    color: #fff;
+  
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+
+      background: none !important;
+
+      border-radius: 50px;
+
+  background-color: var(--theadColor) !important;
+
+  color:var(--lightColor) !important
+
+}
+
+
+
+/* link a datatables td */
+.dataTables_wrapper td a {
+  color: rgb(255, 166, 0) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+
+      background: none !important;
+
+  color: #ddd !important;
+
+}
+
+.paginate_button.current:hover
+
+{
+
+  background: none !important;
+
+      border-radius: 50px;
+
+      background-color: var(--theadColor) !important;
+
+  color:#fff !important
+
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover,
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+
+border: 1px solid #979797;
+
+background: none !important;
+
+border-radius: 50px !important;
+
+background-color: #000 !important;
+
+color: #fff !important;
+
+}
+    .draggable {
+      width: 180px;
+      height: 120px;
+      cursor: move;
+      border: 2px dashed #ff0ff0;color: #fff;
+      background-color: #d800ff42;
+      position: absolute; 
+      user-select: none;
+  }
+
+  .gris{
+    width: 100%;
+    height: auto; 
+  } 
+
+  /* Absolute Center Spinner */
+.loading {
+  position: fixed;
+  z-index: 99999;
+  height: 2em;
+  width: 2em;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #f0f2f5 !important; 
+}
+ 
+/* Transparent Overlay */
+.loading:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+    
+  background-color: #f0f2f5 !important;  
+}
+
+
+/* dataTables Search input box */
+ 
+.dataTables_filter {
+        position: relative;
+    }
+ 
+    .dataTables_filter input { 
+        color: #ccc;
+        background: #fcfcfc00;
+        border: 1px solid #aaa;
+        border-radius: 5px; 
+        text-indent: 10px;
+    }
+ 
+    .dataTables_filter .fa-search {
+        position: absolute;
+        top: 10px;
+        left: auto;
+        right: 10px;
+    }
+    </style>
+ 
+</head>
+
+<body class="g-sidenav-show  bg-dark" >
+ 
+<!-- modal login user -->
+  
+  <!-- Modal -->
+<div class="modal fade" id="configuraTargets" tabindex="-1" role="dialog" aria-labelledby="configuraTargetsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Buscar todos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body"> 
+      
+      <div class="input-group input-group-outline my-3">
+      <label> 
+        <input type="text" class="form-control text-uppercase" id="patente-buscar" placeholder="PATENTE">
+      </label> 
+
+      <label> 
+        <input type="text" class="form-control text-uppercase" id="fecha-buscar" placeholder="XX-XX-XXXX" >
+      </label>
+      <!-- boton buscar -->
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="button" id="btn-buscar-targets" onclick="buscarAll()">Buscar</button>
+        
+      </div>
+    </div>
+ 
+
+        <table class="table table-hover table-stiped text-uppercase" id="tabla_datos_all">
+          <thead>
+            <tr>
+              <th>ip_cam</th>
+              <th>Captura</th>
+              <th>Patente</th>  
+              <th>Fecha</th> 
+            </tr>    
+            </thead>
+          <tbody id="tabla_datos_all_body">
+             
+            </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn bg-gradient-warning">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="usuariosLista" tabindex="-1" role="dialog" aria-labelledby="usuariosListaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-xl" role="document">
+    <div class="modal-content bg-dark">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-normal text-warning" id="usuariosListaModalLabel">Lista usuarios</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+ 
+
+        <div class="table-responsive">
+          <table class="table table-hover table-stiped text-uppercase" id="tabla_datos_usuarios">
+            <thead>
+              <tr>
+                <th>id</th> 
+                <th>Estado</th>
+                <th>Usuario</th>  
+                <th>password</th> 
+                <th>Rol</th> 
+                <th>Acciones</th>
+              </tr>    
+              </thead>
+            <tbody id="tabla_datos_usuarios_body"> 
+            </tbody>
+          </table>
+        </div>
+
+
+
+        <!-- agregar nuevo usuario -->
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="username" class="text-warning">Usuario</label>
+              <input type="text" class="form-control text-warning border border-warning p-3" id="username_newuser" name="username_newuser" placeholder="username" required>
+            </div>
+          </div>  
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="password" class="text-warning">Contraseña</label>
+              <input type="password" class="form-control text-warning border border-warning p-3" id="password_newuser" name="password_newuser" placeholder="Contraseña" required>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="password" class="text-warning">Repetir contraseña</label>
+              <input type="password" class="form-control text-warning border border-warning p-3" id="password2_newuser" name="password2_newuser" placeholder="Repetir contraseña" required>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div id="mensajes_newuser"></div>
+            <div class="form-group">
+              <br>
+              <button type="button" class="btn bg-gradient-warning" id="btn_add_user" onclick="addUser()">Agregar usuario</button>
+            </div>
+             
+          </div>
+        </div>
+
+
+
+      </div>
+      <div class="modal-footer">  
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal detalles vehiculo !-->
+
+<div class="modal fade" id="fullVehiculo" tabindex="-1" role="dialog" aria-labelledby="fullVehiculoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-xl bg-dark " role="document">
+    <div class="modal-content bg-dark">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-normal text-warning" id="fullVehiculoModalLabel">Detalles</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- boton stopAlarma -->
+        <button type="button" class="btn btn-primary" id="btn-stopAlarma" onclick="stopAlarma()">Stop Alarma</button> 
+          <div id="detalles-captura-cuerpo" class="text-white">
+          </div>
+      </div>
+      <div class="modal-footer"> 
+        <!-- cerrar modal -->
+        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div> 
+ 
+<!-- modal estadisticas -->
+<div class="modal fade" id="estadisticas-modal" tabindex="-1" role="dialog" aria-labelledby="estadisticasLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-xl" role="document">
+    <div class="modal-content  bg-dark">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-normal text-warning" id="estadisticasModalLabel">Estadisticas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> 
+        </button>
+      </div>
+      <div class="modal-body bg-dark text-white">
+ 
+                      <!-- div search by date and hours -->
+                      <div class="row">
+                        <div class="col-md-3 col-6">
+                          <div class="form-group">
+                            <label for="fecha">Fecha inicial</label>
+                            <input type="date" class="form-control text-white border-1" id="fecha_inicial" name="fecha" date="date" value="" required>
+                          </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                          <div class="form-group">
+                            <label for="fecha_final">Fecha final</label>
+                            <input type="date" class="form-control text-white  border-1" id="fecha_final" name="fecha_final">
+                          </div>
+                        </div> 
+                        <div class="col-md-6">
+                          <button class="btn btn-sm bg-gradient-secondary" onclick="searchByDate()">Buscar</button>
+                          <button class="btn btn-sm bg-gradient-primary" onclick="downloadFiles()">Descargar datos</button>
+                                      <!-- select para rango --> 
+                <select class="btn  btn-sm bg-gradient-secondary" id="rango" name="rango" > 
+                  <option value="7" selected>Últimos 7 días</option>
+                  <option value="15">Últimos 15 días</option>  
+                  <option value="30">Últimos 30 días</option>  
+                </select> 
+                        
+                        </div>
+                    </div> 
+                    <!-- div search --> 
+        <div class="row">
+   	    
+          <div class="col-md-6" >
+             <div class="card line-chart-example">
+ 
+               
+                               <div class="card-body">
+                                   <canvas  id="estadisticas"  ></canvas>
+               </div>
+             </div>
+           </div>
+
+           <div class="col-md-6" >
+            <div class="card line-chart-example"> 
+ 
+
+                              <div class="card-body">
+                                  <canvas  id="estadisticas_pie"  ></canvas>
+              </div>
+            </div>
+          </div>
+          
+          </div>
+      </div>
+      <div class="modal-footer"> 
+        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+ 
+{% if session.rol == 'admin' %}
+
+  <!-- Modal -->
+<div class="modal fade" id="lista-negra" tabindex="-1" role="dialog" aria-labelledby="lista-negraLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content bg-dark">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-normal text-white" id="exampleModalLabel">Lista negra</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body ">
+
+
+        <div class="table-responsive text-white">
+                 
+
+
+          <table class="table table-hover table-stiped text-uppercase bg-dark" id="tabla-lista-negra" style="width:100%">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Patente</th>
+                <th>Comentario</th>
+                <th>Fecha</th>
+                <th>Opciones</th> 
+              </tr>
+            </thead>
+            <tbody id="body-lista-negra" >
+               
+            </tbody>
+          </table> 
+  
+      </div>
+
+          <hr>
+          <h5 class="text-white">Agregar a lista negra</h5>
+          <!-- formulario agregar -->
+          <div class="row">
+            <div class="col-md-4"> 
+              <input type="text" class="form-control shadow-sm text-white" id="patente-agregar" placeholder="XXXXXX">
+            </div>
+            <!-- comentario -->
+            <div class="col-md-4">
+              <input type="text" class="form-control shadow-sm text-white" id="comentario-agregar" placeholder="Comentario">
+            </div>
+ 
+            <div class="col-md-4">
+              <!-- boton submit -->
+              <button type="button" class="btn btn-primary" id="btn-agregar-lista-negra" onclick="agregarListaNegra()">Agregar</button>
+            </div>
+          </div> 
+
+
+
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>  
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+ 
+
+
+<div id="loading-div">
+<div class="loading" >
+  <div class="spinner-border" role="status">
+    <span class="sr-only"></span>
+  </div>
+  
+</div>
+
+</div>
+  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 ps bg-dark" id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand m-0" href="#">
+
+        <img src="{{ url_for('static', filename='assets/images/logo_montichello.png') }}" class="navbar-brand-img h-100" alt="..."> 
+      </a>
+    </div>
+    <hr class="horizontal light mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        {% if session.rol %}
+        <li class="nav-item">
+          <a class="nav-link active bg-gradient-warning" href="#">
+            <div class="text-center me-2 d-flex align-items-center justify-content-center">
+              <!-- crear svg con icono -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-layout-dashboard" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4 4h6v8h-6z" /> <path d="M4 16h6v4h-6z" /> <path d="M14 12h6v8h-6z" /> <path d="M14 4h6v4h-6z" /> </svg>
+            </div>
+            <span class="nav-link-text ms-1">Principal</span>
+          </a>
+        </li>
+        {% endif %} 
+        {% if session.rol == 'admin' %}
+        <!-- modal estadisticas -->
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#estadisticas-modal">
+            <div class="text-center me-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-activity" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M6 2a.5.5 0 0 1 .47.33L10 12.036l1.53-4.208A.5.5 0 0 1 12 7.5h3.5a.5.5 0 0 1 0 1h-3.15l-1.88 5.17a.5.5 0 0 1-.94 0L6 3.964 4.47 8.171A.5.5 0 0 1 4 8.5H.5a.5.5 0 0 1 0-1h3.15l1.88-5.17A.5.5 0 0 1 6 2Z"/> </svg> 
+            </div>
+            <span class="nav-link-text ms-1">Estadísticas</span>
+          </a>
+        </li>
+ 
+        <li class="nav-item" data-bs-toggle="modal" data-bs-target="#lista-negra">
+          <a class="nav-link text-litght" href="#" onclick="allListaNegra()">
+            <div class="text-center me-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"> <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/> </svg>
+            </div>
+            <span class="nav-link-text ms-1">Lista negra</span>
+          </a>
+        </li>
+
+        <li class="nav-item" data-bs-toggle="modal" data-bs-target="#usuariosLista">
+          <a class="nav-link text-litght" href="#" onclick="tabla_datos_usuarios_body()" >
+            <div class="text-center me-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <span class="nav-link-text ms-1">Usuarios</span>
+          </a>
+        </li>
+ 
+        {% endif %}
+         
+      </ul>
+    </div>
+    {% if session.rol %}
+    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+      <div class="mx-3">
+        <a class="btn bg-gradient-warning mt-4 w-100" href="/" type="button">Reiniciar</a>
+      </div>
+    </div>
+    {% endif %}
+  </aside>
+  
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+      <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" navbar-scroll="true">
+      <div class="container-fluid py-1 px-3">
+       
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+             
+          </div>
+          <ul class="navbar-nav  justify-content-end">
+           
+             
+ 
+            <li class="nav-item dropdown pe-2 d-flex align-items-center">
+              <a href="javascript:;"  class="nav-link text-body p-3" id="dropdownMenuButtonUser"  id="login_item" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-user text-white" aria-hidden="true"></i> Usuario
+              </a>
+              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButtonUser">
+                <li>
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                        
+                        <i class="fa fa-user cursor-pointer"></i>
+
+                      </div>
+                 
+
+                        {% if session.name %}     
+                        
+                        <div class="d-flex flex-column justify-content-center" >
+
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          Bienvenido {{session.name}}
+                        </h6>
+                        <p class="text-xs text-secondary mb-0"> 
+                          {{session.rol}}
+                        </p> 
+                        
+                      </div> 
+                        {% else %}
+                        <div class="d-flex flex-column justify-content-center"  >
+
+                        <h6 class="text-sm font-weight-normal mb-1"  >
+                          Login 
+                        </h6>
+                        <p class="text-xs text-secondary mb-0">
+                          Inicia sesión para continuar
+                        </p>
+                      </div>
+                        {% endif %}
+
+ 
+                    </div>
+                  </a>
+                </li>
+                  {% if session.name %}
+                <li>
+                  <hr class="horizontal dark my-1">
+                  <!-- logout -->
+                  <a class="dropdown-item border-radius-md" href="/logout">
+                    <div class="d-flex py-1">
+                      <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                        <i class="fa fa-sign-out cursor-pointer"></i>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          Cerrar sesión
+                        </h6>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                {% endif %}
+              </ul>
+            </li>
+            <li class="nav-item dropdown pe-2 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-3" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-bell cursor-pointer"></i> Alertas
+              </a>
+              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                 
+                <li>
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                        
+                        <i class="fa fa-bell cursor-pointer"></i>
+
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          Alerta enviada {date}
+                        </h6>
+                        <p class="text-xs text-secondary mb-0">
+                          <i class="fa fa-clock me-1"></i>
+                          hace un momento...
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+ 
+              </ul>
+            </li>
+
+            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-3" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </a>
+            </li>
+
+
+
+          </ul>
+        </div>
+      </div>
+    </nav> 
+ 
+    <!-- End Navbar --> 
+    <div class="container-fluid py-4">
+      <div class="row" >
+        <div class="col-md-12 card bg-dark">
+          
+
+
+
+
+
+
+          <div class="row" id="feed_camaras">
+             
+             
+            </div>
+ 
+            {% if session.rol %}
+
+            <audio controls  id="sonido-alarma" loop style="display: none;">
+              <source src="static/alarma.mp3" type="audio/mpeg" >
+            Your browser does not support the audio element.
+            </audio> 
+              <div id="ultimos-registros" class="row">  
+              </div>
+            
+            <br>
+            <hr>
+            <br>
+
+ 
+
+
+            <div class="table-responsive">
+              
+ 
+
+
+              <table class="table table-hover   text-uppercase bg-dark" id="all_register"  style="width:100%">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Cámara</th>
+                    <th>Imagen</th>
+                    <th>Patente</th>  
+                    <th>Fecha</th> 
+                  </tr>    
+                  </thead>
+                <tbody>
+                   
+                </tbody>
+              </table>
+            </div>
+
+            {% else %}
+            <div class="container-fluid">
+
+                <div class="flex flex-col items-center justify-center min-h-screen py-8 bg-gray-50 sm:px-6 lg:px-8">
+                  <h1 class="text-white text-center">Plataforma de monitoreo de vehículos</h1>
+
+                  <div class="row justify-content-center">
+
+                      <div class="col-md-4"> 
+                          <label class="form-label">Usuario</label>
+                          <div class="input-group input-group-outline my-3">
+                          <input type="text" class="form-control text-warning" id="username">
+                          </div>
+                          <label class="form-label">Password</label>
+                          <div class="input-group input-group-outline mb-3">
+                          <input type="password" class="form-control text-warning" id="password">
+                          </div> 
+                          <div id="add_err2"></div>
+                          <div class="text-center">
+                          <button type="button" class="btn bg-gradient-primary w-100 my-4 mb-2" onclick="loginAjax()">Login</button>
+                          </div> 
+                           
+                      </div>
+
+                  </div>
+ 
+                </div>
+            </div>
+
+ 
+ 
+
+
+              {% endif %}
+
+        </div>
+
+         
+         
+  
+       
+      </div>
+      <footer class="footer py-4  ">
+        <div class="container-fluid">
+          <div class="row align-items-center justify-content-lg-between">
+           
+           <div class="copyright text-center text-sm text-muted text-lg-start">
+                © <script>
+                  document.write(new Date().getFullYear())
+                </script>,
+                 versión 1.0
+              </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+   
+  </div>
+
+  <script src="{{ url_for('static', filename="assets/js/core/popper.min.js") }}"></script>
+  <script src="{{ url_for('static', filename="assets/js/core/bootstrap.min.js") }}"></script> 
+   <script src="{{ url_for('static', filename="js/socket.io.min.js") }}" ></script>
+
+  <script src="{{ url_for('static', filename="assets/js/plugins/perfect-scrollbar.min.js") }}"></script>
+  <script src="{{ url_for('static', filename="assets/js/plugins/smooth-scrollbar.min.js") }}"></script> 
+  
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script> 
+<script src="{{ url_for('static', filename="js/lodash.min.js") }}" type="text/javascript" defer></script>
+<script src="{{ url_for('static', filename="js/material.min.js") }}" type="text/javascript" defer></script> 
+
+
+        
+<script src="{{ url_for('static', filename="js/jquery.min.js") }}?v=v1"></script>
+ 
+  <script src="{{ url_for('static', filename="js/jquery.inputmask.bundle.js") }}" type="text/javascript" defer></script> 
+  <script src="{{ url_for('static', filename="js/utils.js") }}" type="text/javascript" defer></script>
+ 
+  <script async defer src="{{ url_for('static', filename="js/buttons.js") }}"></script>
+  
+  <script src="{{ url_for('static', filename="assets/js/material-dashboard.js") }}?v=3.0.0"></script>
+
+  <!-- datatables -->
+  
+<script type="text/javascript" charset="utf8" src="{{ url_for('static', filename="js/jquery.dataTables.js") }}?v=v1"></script>
+<script type="text/javascript" charset="utf8" src="{{ url_for('static', filename="js/dataTables.buttons.min.js") }}?v=v1"></script> 
+<script type="text/javascript" charset="utf8" src="{{ url_for('static', filename="js/jszip.min.js") }}?v=v1"></script>  
+<script type="text/javascript" charset="utf8" src="{{ url_for('static', filename="js/pdfmake.min.js") }}?v=v1"></script>  
+<script type="text/javascript" charset="utf8" src="{{ url_for('static', filename="js/buttons.html5.min.js") }}?v=v1"></script>   
+
+  <script src="{{ url_for('static', filename="js/Chart.min.js") }}" type="text/javascript"></script>
+<script>
+
+ 
+    var loadPage = document.getElementById("loading-div");
+    loadPage.innerHTML = "";
+    var alertasCache = 0;
+    var alarma = 0
+
+    var audio = document.getElementById("sonido-alarma");
+
+    function loginAjax(){
+  // bloquear boton
+  $("#btn_login").attr("disabled", true);
+  var email = $("#username").val();
+  var password = $("#password").val();
+
+  // VERIFICAR CAMPOS VACIOS
+  if(email == "" || password == ""){
+    // desbloquear boton
+    $("#btn_login").attr("disabled", false);
+    // mostrar mensaje
+    $("#add_err2").html('<div class="alert alert-danger" role="alert"> <span class="fa fa-exclamation-triangle"></span> &nbsp; Por favor ingrese su email y contraseña</div>');
+    return;
+  }
+  $.ajax({
+    type: "POST",
+    url: "login",
+    data: "email="+email+"&password="+password,
+    success: function(html){
+      if(html=='true'){
+        $("#add_err2").html('<div class="alert alert-success  text-white"> \
+        <strong>Authenticated</strong> \ \
+        </div>');
+        window.location.href = "/";
+      } else if(html=='false'){
+        $("#add_err2").html('<div class="alert alert-danger text-white"> \
+        <strong>Usuario o clave error</strong> \ \
+        </div>');
+    $("#btn_login").attr("disabled", false);
+      } else {
+        $("#add_err2").html('<div class="alert alert-danger text-white"> \
+        <strong>Usuario o clave error</strong>  \ \
+        </div>');
+        
+    $("#btn_login").attr("disabled", false);
+      }
+    },
+    beforeSend:function()
+    {
+      $("#add_err2").html('<div class="alert alert-info"> Verificando...</div>');
+    }
+  });
+  return false;
+}
+
+ {% if session.name %}
+    //var audio = new Audio('static/alarma.mp3');
+   
+    // cargar archivo cada 1,5 segundos
+    setInterval(function(){  
+      var ultimos_registros = document.getElementById("ultimos-registros");
+         // cargar archivo json por ajax
+          $.ajax({
+              url: "/static/data.json?rand=" + Math.random(),
+              type: "GET",
+              dataType: "json",
+              success: function(data) {
+                  console.log(data)
+                  // mostrar el primer array
+                  var datos = data[0];
+                  var id = datos["id"];
+                  var nombre_camara =  datos["nombre_camara"];
+                  var imagen_url = datos["imagen_url"];
+                  var fecha = datos["fecha"];
+                  var msj = datos["msj"];
+                  //audio.play(); 
+                  if(alarma>1){
+                      // ejecutar sonido
+                      console.log("sonidoooooO!!!");
+
+                  lanzarSonido();
+                  } 
+                  if(alertasCache!=id){
+                    alertasCache = id 
+                    // crear botones descartar y revisado para insertar en la tabla
+                    var botones =   '<button class="btn btn-danger btn-block btn-sm" onclick="descartar(this)">Descartar</button> '+
+                                        '<button class="btn btn-success btn-block  btn-sm" onclick="revisado(this)">Revisado</button>'  ;
+                    if( alarma == 0){
+
+                        // div 
+                        var div = '<div class="col-md-2 shadow-sm">'+
+                                  '<img src="' + imagen_url + '" class="img-fluid" alt="Responsive image"  onclick="readDataFull(\'' + imagen_url + '\', \'' + fecha + ' <br> <b>'+msj+'</b> \')" data-bs-toggle="modal" data-bs-target="#fullVehiculo">'+
+                                    '<span class="text-white">'+
+                                      '<h5 class="text-warning">'+fecha+'</h5>'+
+                                      '<p><b>'+msj+'</b>'+
+                                      '<br>'+nombre_camara+'</p>'+
+                                    '</span>'+
+                                  '</div> ';
+
+                        // agregar a ultimos_registros el div
+                        ultimos_registros.innerHTML = div + ultimos_registros.innerHTML;
+
+                    }else{
+                        // div 
+                        var div = '<div class="col-md-2 shadow-sm">'+
+                                  '<img src="' + imagen_url + '" class="img-fluid" alt="Responsive image"  onclick="readDataFull(\'' + imagen_url + '\', \'' + fecha + ' <br> <b>'+msj+'</b>\')" data-bs-toggle="modal" data-bs-target="#fullVehiculo">'+
+                                    '<span class="text-white">'+
+                                      '<h5 class="text-warning">'+fecha+'</h5>'+
+                                      '<p><b>'+msj+'</b>'+
+                                      '<br>'+nombre_camara+'</p>'+
+                                      '<p>'+botones+'</p>'+
+                                    '</span>'+
+                                  '</div> ';
+
+                        
+                        // agregar a ultimos_registros el div como html
+                        ultimos_registros.innerHTML = div + ultimos_registros.innerHTML;
+                     
+                    }
+                    
+                    alarma += 1;
+                    
+                  }
+
+                  countDivs();  
+              }
+        });
+ 
+    }, 1500); 
+     
+    function descartar(element){ 
+      // eliminar contenido del padre del boton y reemplazarlo por un texto en rojo
+      element.parentNode.innerHTML = '<span class="text-danger">Descartado</span>';
+      audio.pause();
+      alarma = 1;
+    }
+    function revisado(element){
+      // eliminar contenido del padre del boton y reemplazarlo por un texto en verde 
+      element.parentNode.innerHTML = '<span class="text-success">Revisado</span>';
+      // stop sonido
+      audio.pause();
+      alarma = 1;
+    }
+
+    function stopAlarma(){ 
+      alarma = 1;
+      audio.pause(); 
+    }
+    function readDataFull(urlImg, info) {
+    var tabla = document.getElementById('detalles-captura-cuerpo');
+    var html = "";
+ 
+    html += '<div>'+info+'</div>';
+    html += '<div class="text-center"><img src="' + urlImg + '" class="img-fluid" alt="Responsive image"></div>';
+
+    tabla.innerHTML = html;
+}
+    function lanzarSonido(){
+      
+      // click play a sonido-alarma
+ 
+              audio.play();
+          }
+
+    function countDivs(){
+      var divs = document.getElementById("ultimos-registros");
+      var numDivs = divs.getElementsByTagName("div").length;
+      // borrar ultimo div
+      if(numDivs>6){
+        divs.removeChild(divs.lastChild);
+      }
+
+    }
+
+     
+    function allListaNegra(){
+      var tabla_lista = document.getElementById("tabla-lista-negra");
+      // destruir tabla
+      $('#tabla-lista-negra').DataTable().destroy();
+      // seleccionar body de la tabla
+      var tbody = tabla_lista.getElementsByTagName("tbody")[0];
+      // vaciar el tbody
+      tbody.innerHTML = "";
+      // eliminar patente de la lista negra ajax
+      $.ajax({
+        url: "/all_lista_negra?rand=" + Math.random(),
+        type: "GET", 
+        dataType: "json",
+        success: function(data) {  
+          console.log(data) ;
+          // recorrer y agregar al tbody
+          for(var i=0; i<data.length; i++){
+            var id = data[i][0];
+            var patente = data[i][1];
+            var fecha = data[i][2];
+            var comentario = data[i][3];
+            var botonGuardar = '<button class="btn btn-secondary btn-block" onclick="saveListaNegra('+id+')" disabled>Guardar</button>';
+            var botones = botonGuardar + ' <button class="btn btn-danger btn-block" onclick="deleteListaNegra('+id+', this)">Eliminar</button>';
+            // agregar al tbody con id tabla_datos_body
+            tbody.insertRow(-1).innerHTML = '<td class="bg-dark text-white">' + id + '</td><td class="bg-dark text-white">' + patente + '</td> <td  class="bg-dark text-white" onclick="detectarClick(this)"  id="comentario_' + id + '">' + comentario + '</td> <td  class="bg-dark text-white">' + fecha + '</td><td class="bg-dark text-white">'+botones+'</td>';
+          }
+          $('#tabla-lista-negra').DataTable({
+            "destroy": true,
+            "language": {
+              "lengthMenu": "Mostrar _MENU_ registros por página",
+              "zeroRecords": "No se encontraron registros",
+              "info": "Mostrando página _PAGE_ de _PAGES_",
+              "infoEmpty": "No hay registros disponibles",
+              "infoFiltered": "(filtrado de _MAX_ registros totales)",
+              "search": "Buscar",
+              "paginate": {
+                "first":      "Primero",
+                "last":       "Último",
+                "next":       "Siguiente",
+                "previous":   "Anterior"
+              },
+            },
+            "pageLength": 5,
+            "class": "table table-striped table-bordered bg-dark text-white",
+          }); 
+        }
+      });
+    } 
+
+    // saveListaNegra
+    function saveListaNegra(id){
+      // seleccionar el comentario
+      var comentario = document.getElementById("comentario_"+id).textContent;
+      // confirmar si guardar
+      var confirmar = confirm("¿Desea guardar el comentario?");
+      if(confirmar){
+        // guardar en la base de datos
+        $.ajax({
+          url: "/update_lista_negra?rand=" + Math.random(),
+          type: "POST", 
+          data: {
+            id: id,
+            comentario: comentario
+          },
+          dataType: "json",
+          success: function(data) {  
+            // seleccionar el boton guardar
+            var botonGuardar = document.getElementById("comentario_"+id).parentNode.getElementsByTagName("button")[0];
+            // deshabilitar boton guardar
+            botonGuardar.disabled = true;
+            // cambiar estilo del boton guardar
+            botonGuardar.className = "btn btn-secondary btn-block"; 
+          }
+        });
+      }
+    }
+
+    // funcion detectar click en td
+    function detectarClick(elemento){
+      // seleccionar el elemento
+      var td = elemento;
+      // habilitar contenido editable
+      td.setAttribute("contenteditable", "true");
+      // seleccionar el boton guardar
+      var botonGuardar = td.parentNode.getElementsByTagName("button")[0];
+      // habilitar boton guardar
+      botonGuardar.disabled = false;
+      // cambiar estilo del boton guardar
+      botonGuardar.className = "btn btn-success btn-block"; 
+    }
+    
+
+
+    function agregarListaNegra(){
+      // seleccionar el valor del input
+      var input = document.getElementById("patente-agregar");
+      var patente = input.value; 
+      var comentario = document.getElementById("comentario-agregar").value;
+      var tabla_lista = document.getElementById("tabla-lista-negra");
+      // seleccionar body de la tabla
+      var tbody = tabla_lista.getElementsByTagName("tbody")[0];
+      // vaciar el tbody
+      tbody.innerHTML = "";
+      // agregar patente a la lista negra ajax
+      $.ajax({
+        url: "/add_lista_negra",
+        type: "GET",
+        data: {patente: patente, comentario: comentario},
+        dataType: "json",
+        success: function(data) { 
+          console.log(data);
+          allListaNegra();
+        }
+        });
+        // limpiar input
+        input.value = "";
+    }
+
+    function deleteListaNegra(id, elemento){
+      var tabla_lista = document.getElementById("tabla-lista-negra"); 
+      // dialogo de confirmacion
+      var confirmar = confirm("¿Desea eliminar la patente de la lista negra?");
+      // si confirma
+      if(confirmar){ 
+      // eliminar patente de la lista negra ajax
+      $.ajax({
+        url: "/delete_lista_negra?id="+id,
+        type: "GET",
+        data: {id: id},
+        dataType: "json",
+        success: function(data) { 
+          console.log(data) ;
+          // eliminar tr padre del boton
+          elemento.parentNode.parentNode.remove();
+          }
+        });
+      }
+    }
+    
+    document.getElementById("rango").addEventListener("change", function(){
+      var rango = document.getElementById("rango").value;
+      var tabla_lista = document.getElementById("tabla-lista-negra"); 
+      // eliminar patente de la lista negra ajax
+
+        getEstadisticas(rango);
+    }
+    );
+
+
+    // function obtener todos los registros de la base de datos
+    function getAllData(){
+      var table = document.getElementById("all_register");
+      $.ajax({
+        url: "/all_register?rand=" + Math.random(),
+        type: "GET",
+        dataType: "json",
+        success: function(data) { 
+          console.log(data)
+          var html = "";
+          for(var i=0; i<data.length; i++){
+            var datos = data[i];
+            var nombre_camara =  datos["nombre_camara"];
+            var imagen_url = datos["imagen_url"];
+            var fecha = datos["fecha"];
+            html += '<tr class="bg-dark text-white">';
+            html += '<td class="bg-dark text-white">'+nombre_camara+'</td>';
+            html += '<td class="bg-dark text-white">'+fecha+'</td>';
+            html += '<td class="bg-dark text-white">mensaje</td>';
+            html += '<td class="bg-dark text-white"><img src="'+imagen_url+'"  onclick="readDataFull(\''+imagen_url+'\', \''+fecha+'\')" data-bs-toggle="modal" data-bs-target="#fullVehiculo" style="max-width: 100px"></td>';
+            html += '</tr>';
+          }
+          table.innerHTML = html;
+          dataTableLocal();
+        }
+        // aplicar dataTable a la tabla
+         
+      });
+       
+    }
+    // variable global
+
+var ips = []
+function cargarCamaras(ip){
+      // ajax
+      $.ajax({
+        url: "/camaras",
+        type: "GET",
+        dataType: "json",
+        success: function(data) { 
+          // recorrer el array de camaras
+          var html = "";
+          for(var i=0; i<data.length; i++){
+            
+            // agregar a ips
+            ips.push(data[i]);
+          }
+      
+        }
+      });
+console.log(ips);
+}
+
+function nombreCambiar(ip){
+  // buscar en el array de ips y retornar el nombre 
+  // usar .map
+  var nombre = ips.map(function(item){
+    if(item.ip == ip){
+      return item.nombre;
+    }
+  }).join("");
+} 
+
+function dataTableLocal(){ 
+  $('#all_register').DataTable({
+    
+    
+
+    "language": {
+      "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+    },
+    "class": "table table-striped table-bordered bg-dark text-white",
+    
+    // columnas a mostrar
+    "columns": [
+      { "data": "id"},
+      { "data": "ip_cam"}, 
+      { "data": "fecha" },
+      { "data": "patente" },
+      { "data": "imagen" }
+    ],
+    
+    // modificar columna imagen
+    "columnDefs": [
+ 
+      {
+        "targets": 2,
+        "render": function ( data, type, row, meta ) {
+          return '<a href="#"  onclick="readDataFull(\'static/Global/'+row.ip+'/'+data+'\', \''+row.ip_cam+'\')" data-bs-toggle="modal" data-bs-target="#fullVehiculo" >Ver</a>';
+        }
+      }
+    ],
+    // ajax para obtener los datos de la base de datos
+    "ajax": {
+      "url": "/all_register?rand=" + Math.random(),
+      "type": "GET",
+      "dataType": "json"
+    },
+    reload: true,
+    dom: 'Bfrtip',
+        buttons: [ 
+ 
+        ], 
+
+    processing: true,
+    //orden id de forma descendente
+    "order": [[ 0, "desc" ]],
+    // procesar busqueda en el servidor
+    "serverSide": true, 
+    // delete table
+    "destroy": true, 
+  });
+ 
+
+}
+{% if session.rol %}
+cargarCamaras();
+dataTableLocal();
+getEstadisticas(7);
+{% endif %}
+ 
+// funcion ajax para obtner estadisticas
+function getEstadisticas(rango){
+  if(rango!=undefined){
+    rango = rango;
+  }else{
+    rango = "";
+  }
+  $.ajax({
+    url: "/estadisticas",
+    type: "GET",
+    data: {rango: rango},
+    dataType: "json",
+    success: function(data) {  
+      
+      // obtener no_patente
+      var no_patente = data[0]["no_patente"];
+      // invertir el array de patentes
+      no_patente = no_patente.reverse();
+      
+      // obtener error_patente
+      var error_patente = data[0]["error_patente"];
+      // invertir el array de patentes
+      error_patente = error_patente.reverse();
+
+      // obtener patentes
+      var patentes = data[0]["patentes"];
+      // invertir el array de patentes
+      patentes = patentes.reverse(); 
+      graficarChart(no_patente, error_patente, patentes, rango);
+      graficarChartPie(no_patente, error_patente, patentes, rango);
+    }
+    // aplicar dataTable a la tabla
+     
+  });
+   
+}
+var myPieChart;
+
+function graficarChartPie(no_patente, error_patente, patentes){
+  // sumar datos de no_patente
+  var suma_no_patente = 0;
+  for(var i=0; i<no_patente.length; i++){
+    suma_no_patente += no_patente[i];
+  }
+  // sumar datos de error_patente
+  var suma_error_patente = 0;
+  for(var i=0; i<error_patente.length; i++){
+    suma_error_patente += error_patente[i];
+  }
+  var sum_patentes = 0;
+  for(var i=0; i<patentes.length; i++){
+    sum_patentes += patentes[i];
+  }
+
+  sum_patentes = sum_patentes - (suma_no_patente + suma_error_patente);
+  // calcular porcentaje de no_patente
+  var porcentaje_no_patente = (suma_no_patente * 100) / (suma_no_patente + suma_error_patente + sum_patentes);
+  // calcular porcentaje de error_patente
+  var porcentaje_error_patente = (suma_error_patente * 100) / (suma_no_patente + suma_error_patente + sum_patentes);
+  // calcular porcentaje de patentes
+  var porcentaje_patentes = (sum_patentes * 100) / (suma_no_patente + suma_error_patente + sum_patentes);
+  // redondear porcentaje_no_patente con 2 decimales
+  porcentaje_no_patente = Math.round(porcentaje_no_patente * 100) / 100;
+  // redondear porcentaje_error_patente con 2 decimales
+  porcentaje_error_patente = Math.round(porcentaje_error_patente * 100) / 100;
+  // redondear porcentaje_patentes con 2 decimales
+  porcentaje_patentes = Math.round(porcentaje_patentes * 100) / 100;
+
+  var ctx = document.getElementById("estadisticas_pie").getContext('2d');
+  // borrar grafico anterior
+  if(myPieChart!=undefined){
+    myPieChart.destroy();
+  }
+
+
+
+  myPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ["Patentes Ok%", "No Patentes %", "Error Patentes %"],
+      datasets: [{
+        label: '# Porcentaje: ',
+        data: [ porcentaje_patentes, porcentaje_no_patente, porcentaje_error_patente],
+        backgroundColor: [
+          // azul claro
+          'rgba(54, 162, 235, 0.2)',
+          // rojo claro
+          'rgba(255, 99, 132, 0.2)',
+          // verde claro
+          'rgba(255, 206, 86, 0.2)'
+        ],
+        borderColor: [
+          // azul claro
+          'rgba(75, 192, 192, 1)',
+          // rojo claro
+          'rgba(255, 99, 132, 1)',
+          // verde claro
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    // agregar leyenda
+    options: {
+      title: {
+        display: true,
+        text: 'Porcentaje de Patentes'
+      },
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          // griss
+          fontColor: '#858796',
+        }
+      } , 
+    }
+  });
+}
+var mybarChart;
+function graficarChart(no_patente, error_patente, patentes, rango){
+  // no_patente convertir a array
+  no_patente = no_patente.map(function(item){
+    return parseInt(item);
+  });
+    // borrar grafico anterior
+    if(mybarChart!=undefined){
+      mybarChart.destroy();
+  }
+
+  // grafico de barras
+  var ctx = document.getElementById("estadisticas").getContext('2d');
+  mybarChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: lista_dias(rango),
+      datasets: [{
+        label: '# No patentes',
+        data: no_patente, 
+        // definir color de las barras #roja suave
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1
+      },
+      {
+        label: '# Error patentes',
+        data: error_patente, 
+        // definir color de las barras naranja suave
+        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+        borderColor: 'rgba(255, 159, 64, 1)',
+        borderWidth: 1
+      },
+      {
+        label: '# Autos detectados',
+        data: patentes, 
+        // definir color de las barras verde suave
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      },
+    // graficar el promedio
+ ] },
+    options: {      
+      title: {
+        display: true,
+        text: 'Cantidad de detecciones'
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
+function mostrarContrasena(id){
+      var tipo = document.getElementById("password_"+id);
+      if(tipo.type == "password"){
+          tipo.type = "text";
+      }else{
+          tipo.type = "password";
+      }
+  }
+
+function tabla_datos_usuarios_body(){
+  $.ajax({
+    url: '/allusers',
+    type: 'GET',
+    dataType: 'json',
+    success: function(data){
+      //console.log(data);
+      var html = '';
+      for(var i=0; i<data.length; i++){
+        html += '<tr>';
+        html += '<td>'+data[i].id+'</td>';
+        // crear select estado
+        html += '<td>';
+        html += '<select class="form-control text-warning" id="estado_'+data[i].id+'" >';
+        if(data[i].estado == 1){
+          html += '<option value="1" selected>Activo</option>';
+          html += '<option value="0">Inactivo</option>';
+        }else{
+          html += '<option value="1">Activo</option>';
+          html += '<option value="0" selected>Inactivo</option>';
+        }
+        html += '</select>';
+        html += '</td>';
+        html += '<td><input type="text" class="form-control text-warning" value="'+data[i].nombre+'" id="name_'+data[i].id+'"></td>'; 
+        html += '<td><div class="row"><div class="col"><input type="password" class="form-control text-warning" id="password_'+data[i].id+'" value="'+data[i].password+'"></div>';
+        
+        if(data[i].id != 1){
+          html += '<div class="col"><input type="checkbox" onclick="mostrarContrasena('+data[i].id+')"> <i class="fas fa-eye"></i></div></div></td>';
+        }else{
+          html += '</div></div></td>';
+        }
+        // tipo 
+        html += '<td>';
+        if(data[i].id != 1){
+          html += '<select class="form-control text-warning" id="rol_'+data[i].id+'" >';
+          if(data[i].rol == "admin"){
+            html += '<option value="admin" selected>Administrador</option>';
+            html += '<option value="user">Usuario</option>';
+          }else{
+            html += '<option value="admin">Administrador</option>';
+            html += '<option value="user" selected>Usuario</option>';
+          }
+          
+          html += '</select>';
+        }else{
+          html += '<input type="hidden" id="rol_'+data[i].id+'" value="admin">';
+        }
+        html += '</td>';
+        html += '<td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_editar_usuario" onclick="editar_usuario('+data[i].id+')">Guardar</button></td>';
+        if(data[i].id != 1){
+          html += '<td><button type="button" class="btn btn-danger btn-sm" onclick="eliminar_usuario('+data[i].id+')">Eliminar</button></td>';
+        }else{
+          html += '<td></td>';
+        }
+        html += '</tr>';
+      }
+      $('#tabla_datos_usuarios_body').html(html);
+    }
+  });
+}
+
+// eliminar_usuario
+function eliminar_usuario(id){
+  if(confirm("¿Está seguro de eliminar el usuario?")){
+    $.ajax({
+      url: '/eliminar_usuario',
+      type: 'POST',
+      dataType: 'json',
+      data: {id_usuario: id},
+      success: function(data){
+        // json
+        if(data.status == 'ok'){ 
+          tabla_datos_usuarios_body();
+        }else{
+          alert(data.mensaje);
+        }
+      }
+    });
+  } 
+}
+
+// funcion editar_usuario
+function editar_usuario(id){     
+  
+  if($('#password_'+id).val() == ''){
+      return alert('Debe ingresar una contraseña');
+    }
+  // dialogo de confirmacion para editar usuario
+  if(confirm('¿Desea guardar los datos seguro?')){
+
+  // ajax
+  $.ajax({
+    url: '/edituser' ,
+    type: 'POST',
+    dataType: 'json', 
+
+    data: {
+      id: id,
+      nombre: $('#name_'+id).val(),
+      password: $('#password_'+id).val(),
+      estado: $('#estado_'+id).val(),
+      rol: $('#rol_'+id).val()
+    },
+    success: function(data){ 
+      // leer json con success
+      if(data.success == 'true'){ 
+        // recargar tabla
+        tabla_datos_usuarios_body(); 
+      }else{
+        alert('Error al editar usuario');
+      }
+ 
+    }
+  });
+}
+}
+
+// addUser
+function addUser(){
+  // validar campos
+  if($('#username_newuser').val() == ''){
+    // alerta en mensajes_newuser
+    $('#mensajes_newuser').html('<div class="alert alert-danger text-white" role="alert">Debe ingresar un nombre de usuario</div>');
+    return;
+  }
+  if($('#password_newuser').val() == ''){
+    // alerta en mensajes_newuser
+    $('#mensajes_newuser').html('<div class="alert alert-danger text-white" role="alert">Debe ingresar una contraseña</div>');
+    return;
+  }
+  // comparar las contraseñas
+  if($('#password_newuser').val() != $('#password2_newuser').val()){
+    // alerta en mensajes_newuser
+    $('#mensajes_newuser').html('<div class="alert alert-danger text-white" role="alert">Las contraseñas no coinciden</div>');
+    return;
+  }
+  // dialogo de confirmacion para agregar usuario
+  if(confirm('¿Desea agregar el usuario?')){
+    // ajax
+    $.ajax({
+      url: '/adduser' ,
+      type: 'POST',
+      dataType: 'json', 
+      data: {
+        nombre: $('#username_newuser').val(),
+        password: $('#password_newuser').val(), 
+      },
+      success: function(data){ 
+        // leer json con success
+        if(data.success == 'true'){ 
+          // recargar tabla
+          tabla_datos_usuarios_body(); 
+          // limpiar campos
+          $('#username_newuser').val('');
+          $('#password_newuser').val('');
+          $('#password2_newuser').val('');
+        }else{
+          alert('Error al agregar usuario');
+        }
+      }
+    });
+  }
+}
+
+function promedio(no_patente, error_patente, patentes){
+  var promedio = [];
+  for(var i=0; i<no_patente.length; i++){
+    promedio.push((no_patente[i] + error_patente[i] + patentes[i]) / 3);
+  }
+  return promedio;
+}
+function lista_dias(rango){
+    var fecha = new Date();
+    var lista_dias = [];
+    // rango a numero
+    rango = parseInt(rango);
+    for(var i=0; i<rango; i++){  
+      if(i!=0){ 
+      // restar i dias
+      fecha.setDate(fecha.getDate() - 1);
+      }
+      console.log(fecha);
+      // agregar a la lista de dias
+      lista_dias.push(obtenerNombreDiaHoy(fecha)); 
+    } 
+    // reversa lista
+    lista_dias = lista_dias.reverse();
+    return lista_dias;
+}
+
+
+function obtenerNombreDiaHoy(fecha){  
+  var dia = fecha.getDay();
+  var nombre_dia = "";
+  switch(dia){
+    case 0:
+      nombre_dia = "Domingo";
+      break;
+    case 1:
+      nombre_dia = "Lunes";
+      break;
+    case 2:
+      nombre_dia = "Martes";
+      break;
+    case 3:
+      nombre_dia = "Miercoles";
+      break;
+    case 4:
+      nombre_dia = "Jueves";
+      break;
+    case 5:
+      nombre_dia = "Viernes";
+      break;
+    case 6:
+      nombre_dia = "Sabado";
+      break;
+  }
+  return nombre_dia;
+}
+ 
+function searchByDate(){
+  var fecha_inicial = document.getElementById("fecha_inicial").value;
+  var fecha_final = document.getElementById("fecha_final").value;
+  // si no hay fecha final
+  if(fecha_final == null){
+    // fecha final es igual a fecha inicial
+    fecha_final = fecha_inicial;
+  } 
+
+  // convertir fecha de dd-mm-YY a YY-mm-dd
+//  fecha_inicial = fecha_inicial.split('-').reverse().join('-');
+ // fecha_final = fecha_final.split('-').reverse().join('-');
+
+  // obtener datos
+  $.ajax({
+    url: '/search_fechas',
+    type: 'GET',
+    data: {
+      fecha_inicial: fecha_inicial+' 00:00:00',
+      fecha_final: fecha_final+' 00:00:00'
+    },
+    success: function(data){
+      
+      // obtener no_patente
+      var no_patente = data[0]["no_patente"];
+      // invertir el array de patentes
+      no_patente = no_patente.reverse();
+      
+      // obtener error_patente
+      var error_patente = data[0]["error_patente"];
+      // invertir el array de patentes
+      error_patente = error_patente.reverse();
+
+      // obtener patentes
+      var patentes = data[0]["patentes"];
+      // invertir el array de patentes
+      patentes = patentes.reverse(); 
+      graficarChart(no_patente, error_patente, patentes, rango);
+      graficarChartPie(no_patente, error_patente, patentes, rango); 
+
+    }
+  });
+
+
+
+}
+
+
+// funcion para descargar archivo
+function downloadFiles(){
+  var ruta = 'static/registros.csv?'+Math.random()
+  // crear elemento a 
+  var a = document.createElement('a');
+  // definir ruta
+  a.href = ruta;
+  // definir nombre del archivo
+  a.download = ruta;
+  // agregar elemento a al body
+  document.body.appendChild(a);
+  // simular click
+  a.click();
+  // eliminar elemento a
+  document.body.removeChild(a);
+
+
+}
+{% endif %}
+</script>  
+  
+
+</body>
+
+</html>

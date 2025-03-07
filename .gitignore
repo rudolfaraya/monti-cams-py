@@ -169,3 +169,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# database
+base_datos.db
+
+# asdf
+.tool-versions
+
+# jetbrains files
+.idea/*
