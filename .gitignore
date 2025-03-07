@@ -178,3 +178,6 @@ base_datos.db
 
 # jetbrains files
 .idea/*
+
+# sessions
+flask_session/
